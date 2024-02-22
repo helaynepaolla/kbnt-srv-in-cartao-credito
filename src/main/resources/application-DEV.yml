@@ -1,0 +1,69 @@
+base:
+  urlPrefix: http://
+  urlSufix: kbnt-srv-in-cartao-credito.pfl2.svc.cluster.local:8080
+  
+statelesskey: ${STATELESS_KEY}
+
+#INICIO - Springfox - Swagger
+springfox:
+  documentation:
+    enabled: true
+    swagger:
+      v2:
+        path: /api-docs
+#FIM - Springfox - Swagger
+
+# INICIO - Mapeamento Feign de funcionalidades POR AMBIENTE
+
+ctas:
+  participanteContas:
+    name: participanteContas
+    url: https://ctas-srv-participante-contas-pjl2.pj.cloud.corpti.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 8000
+
+psdc:
+  caasConsultaSocietario:
+    name: caasConsultaSocietario
+    url: https://psdc-srv-caas-consulta-societario-corp.corp.cloud.corpd.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 8000
+  caasIdentificacaoCliente:
+    name: caasIdentificacaoCliente
+    url: https://psdc-srv-caas-identificacao-cliente-corp.corp.cloud.corpd.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 8000
+  caasConsultaDadoscontato:
+    name: caasConsultaDadoscontato
+    url: https://psdc-srv-caas-consulta-dadoscontato-corp.corp.cloud.corpd.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 8000
+  caasConsultaDadosFinanceiro:
+    name: caasConsultaDadosFinanceiro
+    url: https://psdc-srv-caas-consultadadosfinan-pf-corp.corp.cloud.corpd.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 8000
+  cpnservice:
+    name: cpn
+    url: cepn-srv-endereco-pfl2.pf.cloud.corpd.bradesco.com.br
+    connectionTimeout: 3000
+    readTimeout: 800
+    
+jks:
+  path: ${ENV_JKS_PATH:keystores/trusted.jks}
+  trustedAlias: ${ENV_JKS_TRUSTED_ALIAS:trusted}
+  password: ${ENV_JKS_PASSWORD:123456}
+
+csi-driver:
+  path: ${CSI_DRIVER_PATH:./mnt/secrets-store/}
+
+bradesco.enge.logcloud.srvcanal.log:
+  auto: true
+  level: INFO
+  console.enable: true
+  file:
+    enabled: true
+    fileName: srvcanal
+    folder: logs
+    maxSize: 10MB
+    maxHistory: 10

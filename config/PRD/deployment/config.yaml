@@ -1,0 +1,115 @@
+---
+app:
+  name: kbnt-srv-authorization-server
+  centro_custo: kbnt
+  value_stream: bradex
+clusters:
+  - name: sandbox
+    overrides:
+      namespace: LEAPSANDBOX
+      hpa:
+        min_replicas: 2
+        max_replicas: 5
+      probes:
+        startup_period: 60
+deploy:
+  api_gateway:
+    publish_api: false
+    publish_api_type: external
+    organization: Esteira Leap
+    state: published
+    frontend_api_path: "/recarga-tel"
+    custom_certicate: ca.crt
+  env: PRD
+  namespace: expresso-seguranca
+  base_url_istio: http://ingress.internal.global.ti.teste.intranet:8443
+  resources:
+    request_memory: "0.5Gi"
+    request_cpu: "250m"
+    limit_memory: "1Gi"
+    limit_cpu: "500m"
+    target_cpu_utilization_percentage: 80
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+  configmap:
+    SPRING_PROFILES_ACTIVE: DEV
+    JAVA_OPTS: -Xms768m -Xmx768m
+    SERVER_PORT: 8080
+    FEIGN_HTTPCLIENT_MAX_CONNECTIONS: 800
+    FEIGN_HTTPCLIENT_MAX_CONNECTIONS_PER_ROUTE: 400
+    FEIGN_HTTPCLIENT_CONNECTION_TIME_REQUEST: 3000
+    FEIGN_HTTPCLIENT_OKHTTP_DEFAULT_READ_TIMEOUT: 60
+    FEIGN_HTTPCLIENT_CONFIG_DEFAULT_CONNECT_TIMEOUT: 7000
+    FEIGN_HTTPCLIENT_CONFIG_DEFAULT_READ_TIMEOUT: 7000
+    SERVER_PARALELISM: 200
+    ENV_HTTPCLIENT_CONFIG_DEFAULT_CONNECT_TIMEOUT: 500
+    ENV_HTTPCLIENT_CONFIG_DEFAULT_READ_TIMEOUT: 1000
+    ENV_HTTPCLIENT_CONFIG_DEFAULT_WRITE_TIMEOUT: 500
+    ENV_HTTPCLIENT_CONFIG_DEFAULT_RETRY: "true"
+    ENV_OKHTTPCLIENT_POOL_MAX_IDLE_CONNECTIONS: 20
+    ENV_OKHTTPCLIENT_POOL_KEEP_ALIVE_DURATION_SEGUNDOS: 20
+    LOG_LEVEL_ROOT: "INFO"
+    LOG_LEVEL_BR_COM_BRADESCO: "INFO"
+    LOG_LEVEL_OKHTTP3: "OFF"
+    LOG_LEVEL_ORG_SPRINGFRAMEWORK: "INFO"
+    ENV_DISPOSITIVOS_CANAL_66: "003,004,005,010,025"
+    ENV_DISPOSITIVOS_CANAL_66_CREDITO: "010"
+    ENV_DISPOSITIVOS_CANAL_66_DEV: "003,010"
+    ENV_DISPOSITIVOS_CANAL_66_DEV_SENHA_DEBTO: "003"
+    ENV_DISPOSITIVOS_CANAL_66_DEV_TOKEN_FISICO: "004"
+    ENV_DISPOSITIVOS_CANAL_66_DEV_TANCODE: "005"
+    ENV_DISPOSITIVOS_CANAL_66_DEV_OTP6: "010"
+    ENV_COD_MIDIA: 66
+    ENV_COD_SERVICO: 57
+    ENV_DISPOSITIVOS_CANAL_66_DEV_OTP8: "025"
+    ENV_SRV_AUT_TIMEOUT: "5000"
+    ENV_SRV_AUT_CACHE_TIMEOUT: "300"
+    ENV_SRV_AUT_CACHE_CONNECT_TIMEOUT: "30"
+    ENV_SRV_AUT_MAX_CONNECTION_POLL: "1"
+    ENV_SRV_SPRINGBOOT: ""
+    ENV_PATH_CERTIFICADO1: /mnt/secrets-store/certificado.pem
+    #-------------------INICIO CONECTOR CWS-------------------------#
+    #----Os Valores abaixo estao em sua configuracao default, ajuste conforme necessario.----#
+    #----VERIFICAR IPS ABAIXO POR AMBIENTE, CADA CANAL DEVE USAR SUA PORTA APROPRIADA--------#
+    ENGE_CWS_SERVER: "10.193.93.48:3195"
+    ENGE_CWS_SERVER_CANAL66: "10.193.93.48:3130" # caso precise do NAT, use 192.168.240.12:3130
+    ENGE_CWS_CONNECTION_TIMEOUT: "5000"
+    ENGE_CWS_CONNECTION_MANAGER_TIMEOUT: "20000"
+    ENGE_CWS_CONNECTION_IDLE_TIMEOUT: "60000"
+    ENGE_CWS_MAX_HOST_CONNECTIONS: "20"
+    ENGE_CWS_MAX_TOTAL_CONNECTION: "20"
+    ENGE_CWS_SO_TIMEOUT: "20000"
+    ENGE_CWS_RETRY_COUNT: "3"
+    #-------------------FIM CONECTOR CWS----------------------------#
+  hpa:
+    min_replicas: 2
+    max_replicas: 5
+  probes:
+    startup_period: 60
+    readiness_initial_delay: 80
+    readiness_failure_threshold: 5
+    readiness_period: 40
+    liveness_initial_delay: 30
+    liveness_failure_threshold: 4
+    liveness_period: 30
+  metrics:
+    target_cpu_utilzation_percentage: 80
+# Habilite esse trecho caso utilize Key Vault
+#azurekv:
+#  Tenant id. Até então, só temos esse tenant id
+#  tenant_id: ccd25372-eb59-436a-ad74-78a49d784cf3
+#  key_vault:
+#    Nome do key vault
+#    name: kv-teste-integracao-aro
+#    objects:
+#      - name: minhasecret
+#        type: secret
+#        version: null
+
+#Habilite esse trecho caso utilize Axway API Gateway
+#api_gateway:
+#  publish_api: true
+#  organization: Esteira Leap Recarga
+#  state: published
+#  frontend_api_path: "/bff-canais/recarga_telefone"
